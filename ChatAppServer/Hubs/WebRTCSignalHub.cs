@@ -1,6 +1,7 @@
 ﻿using ChatAppServer.Model;
 using ChatAppServer.Services;
 using ChatAppServer.Util;
+using DAL.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
@@ -9,6 +10,7 @@ namespace ChatAppServer.Hubs
     [Authorize]
     internal class WebRTCSignalHub : Hub
     {
+        private ChatUserNotificationTokenEntityRepository ChatUserNotificationTokenEntityRepository { get; set; } = new();
         public override Task OnConnectedAsync()
         {
             ClientsUtil.AddWebRTCClient(Context, GetType().Name);
@@ -123,7 +125,9 @@ namespace ChatAppServer.Hubs
                       //--------------------------------------------------------------------------------
                      
                     //Offline send
-                    string? notificationToken = await FireBaseDbService.Instance.GetNotificationTokenAsync(dataModel.TargetId);
+                    //string? notificationToken = await FireBaseDbService.Instance.GetNotificationTokenAsync(dataModel.TargetId);
+                   string? notificationToken = ChatUserNotificationTokenEntityRepository.GetUserNotificationTokenById(dataModel.TargetId);
+
                     await FireBaseAdminService.Instance.SendIncomingCallAsync(notificationToken, dataModel);
                     return;
                 }

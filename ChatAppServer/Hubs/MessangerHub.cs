@@ -44,7 +44,8 @@ namespace ChatAppServer.Hubs
             if (receiverConnectionId.IsNullOrEmpty() )
             {
                 // Offline send
-                string? notificationToken = await FireBaseDbService.Instance.GetNotificationTokenAsync(receiverId);
+               // string? notificationToken = await FireBaseDbService.Instance.GetNotificationTokenAsync(receiverId);
+                string? notificationToken = ChatUserNotificationTokenEntityRepository.GetUserNotificationTokenById(receiverId);
                 await FireBaseAdminService.SendMessageAsync(notificationToken, sendMessageArgs);
                 return;
             }
