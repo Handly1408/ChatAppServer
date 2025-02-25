@@ -1,6 +1,12 @@
-using ChatAppServer.Hubs;
+﻿using ChatAppServer.Hubs;
+using ChatAppServer.Model;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.VisualBasic;
+using static Google.Protobuf.Reflection.GeneratedCodeInfo.Types;
+using static System.Net.Mime.MediaTypeNames;
 
 public class Program
 
@@ -12,7 +18,14 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddRazorPages();
-        builder.Services.AddSignalR();
+        builder.Services.AddSignalR(options =>
+        {
+            options.KeepAliveInterval = TimeSpan.FromSeconds(10); // Клиент отправляет пинг раз в 10 сек
+            options.HandshakeTimeout = TimeSpan.FromSeconds(5);   // Если клиент не отвечает 5 сек — разрыв
+            options.EnableDetailedErrors = true;
+  
+        });
+
         ConfigureServices(builder.Services);
 
         App = builder.Build();
@@ -41,6 +54,12 @@ public class Program
         App.MapHub<MessangerHub>("/messenger");
         App.MapHub<ContactOnlineStatusHub>("/contactsonlinestatus");
         App.MapHub<WebRTCSignalHub>("/webrtc");
+        App.MapHub<DbHub>("/dbhub", options =>{
+            
+            options.Transports = HttpTransportType.WebSockets | HttpTransportType.LongPolling;
+              
+
+        });
 
 
         App.Run();
@@ -51,9 +70,13 @@ public class Program
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddScheme<AuthenticationSchemeOptions,FirebaseTokenValidator>(JwtBearerDefaults.AuthenticationScheme
-            ,null);
+        ,null);
+        
 
     }
 
 }
+ 
+ 
+
 

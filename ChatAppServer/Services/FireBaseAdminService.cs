@@ -108,7 +108,7 @@ namespace ChatAppServer.Services
 
         }
 
-        internal async Task SendMessageAsync(string? notificationToken, SendMessageArgs args)
+        internal static async Task SendMessageAsync(string? notificationToken, SendMessageArgs args)
         {
             
             if (notificationToken == null) return;

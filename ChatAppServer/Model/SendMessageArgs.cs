@@ -18,7 +18,8 @@ namespace ChatAppServer.Model
          */
         DELETE = 2,
         DELETE_FOR_BOTH = 3,
-        NONE=-1
+        READ =4,
+        NONE =-1
 
     }
     public class SendMessageArgs
@@ -28,6 +29,7 @@ namespace ChatAppServer.Model
         /// </summary>
         public string MessageEventTypeEnum { get; set; }
         public string ReceiverId { get; set; }
+        public String[] ExtraReceiversId {  get; set; }
         public string SenderId { get; set; }
       
         public string MessageJson { get; set; }

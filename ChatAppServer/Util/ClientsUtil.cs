@@ -9,6 +9,7 @@ namespace ChatAppServer.Util
         public static ConcurrentDictionary<string, string> AuthorizedMessegingClients { get; private set; } = new ConcurrentDictionary<string, string>();
         public static ConcurrentDictionary<string, string> AuthorizedChatContactStatusClients { get; private set; } = new ConcurrentDictionary<string, string>();
         public static ConcurrentDictionary<string, string> AuthorizedWebRTCClients { get; private set; } = new ConcurrentDictionary<string, string>();
+        public static ConcurrentDictionary<string, string> AuthorizedDbClients { get; private set; } = new ConcurrentDictionary<string, string>();
         /// <summary>
         /// Add new client to list
         /// </summary>
@@ -33,7 +34,6 @@ namespace ChatAppServer.Util
            RemoveFromList(AuthorizedChatContactStatusClients, context, hubName);
         }
 
-        
         public static (string?, string?) AddWebRTCClient(HubCallerContext context, string? hubName = null)
         { 
             return UpdateList(AuthorizedWebRTCClients, context, hubName);
@@ -41,6 +41,14 @@ namespace ChatAppServer.Util
         public static void RemoveWebRTCClient(HubCallerContext context, string? hubName = null)
         {
             RemoveFromList(AuthorizedWebRTCClients, context, hubName);
+        }
+        public static (string?, string?) AddDbClient(HubCallerContext context, string? hubName = null)
+        {
+            return UpdateList(AuthorizedDbClients, context, hubName);
+        }
+        public static void RemoveDbClient(HubCallerContext context, string? hubName = null)
+        {
+            RemoveFromList(AuthorizedDbClients, context, hubName);
         }
         private static (string?, string?) UpdateList(ConcurrentDictionary<string, string> toUpdate, HubCallerContext context, string? hubName = null)
         {

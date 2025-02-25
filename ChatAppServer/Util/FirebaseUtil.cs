@@ -12,20 +12,50 @@ namespace ChatAppServer.Util
         private static string _serviceAccountFile = @"
 {
                     ""type"": ""service_account"",
-                    ""project_id"": ""chatix-be382"",
-                    ""private_key_id"": ""4f35f6bf3384f26c7cc8c45ef5ce1cf40d8486a3"",
-                    ""private_key"": ""-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDHHBDfZKzgwsRG\n9l3BDfmqeHJEW/rHN4i00uBy8IJwj5GKDd59T6RJWtTJt35GcyyvAJISntmPrbiJ\nMtnGnYbIDEs2JPGvThkbUZggHQoeBxM2YUiJKQl21CAPdnNd+1/HJLGWwmRcFljk\n1iNi5IbevV2hVeBc8VQU/k2q63hR47twLaWDLMqDONMITxlFGnOA+eOYhWEQLBLn\nDAWQogO0ZCyhzYxwXJWT3RibVHO7THkFbPjLlNF3wAyuVUB+CAQnA5IcwKUbjCPU\nWZeXLwN8P0JzVJl5BQ9fvY4JMm96Si/lvn3dRMTauaggObf6w8PNgCQP+aX8rA2X\nLsnj4JLTAgMBAAECggEAF2RdORmXU+qd66ZbGmi9acEvz4cs3cXQ+kmCFA7cjEPZ\nuenqNzepmfKhaDd2DunOGJtNDgH6lm427Wt7eWGdaZhEJ87MVCetPG/oGvG+dAup\nvqxMPM0E7yB5ycdFQ4faV0eg05DwAH+hnvTngGFP1RBTVTaFHvY9RiAgWNHEN36A\nKVuh/dzOUo8/hZZTIjiD7kmjMSTzps/HaydWBA3xGYwizIrt4EsdweKNQjO4Unci\nd3w5k4UzWbci6hN/mX4N2bZf/7k7zAF27YAVZJMVgV9keJ5o3gRPjfiPxnlOrK01\nKTWp9z6QcNxJlGVtYD0HT0wB4DHk/RLAoTOcLiwx0QKBgQDwmEYJv2cDuIQobWQP\nLGgQfExHjgtn1pxKa6Ee0BXm3X0hpCmKZ5GVicleDoFx1MtThAn6DeLTkB629rfY\nYGsLp5A/fRhc98ddVCc5Ap/lLJ3A5eoIGu5a1TA8QVkb52SGCFTjnNORopiFXOTi\nvZZBwhrO0lNd7pL6lO+zRM4HsQKBgQDT28j5flsGVcAVsFGjY5oG5F/kELj0KYm5\nY6tdiZraeZklVajZLj+E72rz1Fwoi82Jw3ZpEBfv8WwmHUa80U1C+7G1Egaf+bM4\n4NFWB7NoLMoXcClEdxpCsAUKZOF78EOUmt7h2zcCITad2CleGkUDa/1w5a44y34L\nYTKGMgDnwwKBgQDAGlWR4un15pZfUTjbhLFyuEyPtbMVrh4MrfNwDuXt+Fu5SMKC\naD+uDt5h42Mn6KiQfpUYu42pLyHXJReWBSZzn89lYhTZ5l2g/1hyBM52xjEPnIRJ\nBHfcvuxMsEDeLtvsySo+szGazyDJG2sGQCqBRuLw0K8QCTYCLnlVwlJfgQKBgEkE\n65PyVPUuAPJ4vuqNnbzaYaJ9kQG2f12CWMH4d4Ltfjc7+uI/6myrCDXZ75mZ9dGR\nqPI1NcrhbuEEHileCj8X+PvrppTkvzzPX9dC+DbjmRPS+KY8VrS9bj9S3dSVzvUd\nG8zEfYUiZWyp4Dgq3bZ8NfH/d7jjiiHp8jwGaAF5AoGAEfdbFwlX4dsdTvV6Jgak\n0n2boumEGuCwW9KCHfAV1cMTlYgLUJTvdtdyys18KkevpjbmL0glM25xHzRVn/kY\noLSvNI2A7arrarJwyYhR44ONNSUUrLF0mnAlhHFxOhQh2vkecIR9iJJbuMvqvrJJ\nNoTXkLiUTWHgcGLsTWUDYUg=\n-----END PRIVATE KEY-----\n"",
-                    ""client_email"": ""firebase-adminsdk-todbl@chatix-be382.iam.gserviceaccount.com"",
-                    ""client_id"": ""101347413859267099682"",
+                    ""project_id"": ""chat-ab4ff"",
+                    ""private_key_id"": ""e38e2696fe215490769d14a7ba927026b869f2cb"",
+                    ""private_key"": ""-----BEGIN PRIVATE KEY-----
+MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDKcdQtARB+bwG7
+n2/Ef2UJ48OffHJdNTpCLoivrtcskocOjfLvetyN00n7Gg1CK2gTIzQ1xLIJOFan
+VK/6xgSlzmvJVqwZOrBAk9PuAxVgLgT/gbGFt2IL8mnxoeZofw2fANBdBfOm3Zrz
+mpQnwY26m8R1ClI6gGlke+unWiOX3enzpva9/oe0C2GpwrHJJ28ZIh7Anwoc8Wt4
+MiISOlB59OnDu3LFnX9+Woa9Qs+5uKahcIvxkzxzGNLDg5j2yOyJOzgSOPpZ/u4S
+QUTV09QtaY3JiOOO2IEa59VzswvIuhI4fNhF1HcHBEyxEQlZlUvqg0u0hZ9UwnVq
+VhHXjAEtAgMBAAECggEACLCSlkzW872AhqbDWhXnmJowrXSJY0n1ZDpOO0Ghy0yq
+Z+FOn5Ms9cNLzzbPSKlj4EH56/eXBMwTZs2SP1RR+BXOqUtYrZLIAR2ebv6RjlKr
+X100sGznYoDJF2bOHcBi2C5lbeqN7jMKvFfvY6glP7fIaQd9f6axNMT8Eah4ocNy
+WdB0UDJjZJM+15veEnO5NHRsvXo+lpcPqJtun9MbuhzRQTHqAlTtT9aiUkd4FaZo
+QNqWilIyC8Eq1TOvSLk/qr5PeAhueUGz4sNUccvU3MhKMi71tgcuUofVeZ/YqyYM
+br9T8obKe6IlN8Z4gk9u2cMLLLRNRvy44NHdZ5ljKQKBgQDmVdTQzWG3DRaeqarH
+CmvFCcBS2L3B4VYLnNWYqW8NoM3UlCn/ED33DSN5zUFmn6e/TY343mb9HsF63kUl
+WqfXMnYhHqn4/KZtgioTMWQDa+1SuicgI/NB3CD1nGo1ED1tScLfKpB0KUkh+SPH
+yaghMR/O8P8/xB80PttZTujv6wKBgQDhAG9Jp5ruZKDE2AILdOXrr9z3O1nS90kv
+zB2IKZoZlXU9nCjAEUgGrxoELcjvisNg2lSQkL/7UyiyVqqzRkFdIWdwXY4hTfXa
+ShHjA81tZ/m+yd9Gg0N+YwB34nLVwrHeRcRN6e+R9tnt2uuXmYRtvBusBu9AD9vz
+hAH4ci2lRwKBgQDDEBs7fUNsbzQhyBQtngCojFqIjq8c20UwbnBhadP3mZ/WkGeE
+b2/aohDSHOZvD3RTSU2bXlWftQUrlcK/IKgVUdHCuKI/j08uXFZfjKtjTmpcbfOm
+f2uJ8e8jsYQsTgWHYTkcH4LYLQKXN9N6Zafx/BUw/t1bVi8K4tSGLJKOYwKBgQDf
+JPM59QNuklXvYtsESbcM+6kFeNMoqx7mTGStebTe0p8nrwurEHiCSH5gzpeNGe2S
+zHU5upTryBmAZPt+OJrypgJUKjSfSxYcm4EJx+egLZI+aS8KW3xAiCcavnZtEV4d
+tsttCikSdeLERm2IODRiMECxZ184BYJ6C914bKRgWQKBgEsrGc1x76sX34hy2SLJ
+vrPAz2sUJ6ucOsvTVea9JqSIEO79sgEySw8yGZsc3jEDhhIC36/hJYN+JCDafVvb
+y5JaYfNCtdRHAaUYvAiCz9GvaMI1Wc91sK7M7+hLDlSCWfxYZ9tQdinRJS1GkRK7
+75WFOWYyIl5O4ul0nf24jF+h
+-----END PRIVATE KEY-----
+"",
+                    ""client_email"": ""firebase-adminsdk-67od2@chat-ab4ff.iam.gserviceaccount.com"",
+                    ""client_id"": ""116774589949156158202"",
                     ""auth_uri"": ""https://accounts.google.com/o/oauth2/auth"",
                     ""token_uri"": ""https://oauth2.googleapis.com/token"",
                     ""auth_provider_x509_cert_url"": ""https://www.googleapis.com/oauth2/v1/certs"",
-                    ""client_x509_cert_url"": ""https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-j586k%40chatix-be382.iam.gserviceaccount.com"",
+                    ""client_x509_cert_url"": ""https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-67od2%40chat-ab4ff.iam.gserviceaccount.com"",
                     ""universe_domain"": ""googleapis.com""
 }";
         public static bool CheckAdminInit()
         {
-
+            {
+ 
+}
             if (!FireBaseAdminService.Instance.Initialized)
             {
                 Console.WriteLine("Firebase не инициализирован. Пожалуйста, проверьте конфигурацию.");

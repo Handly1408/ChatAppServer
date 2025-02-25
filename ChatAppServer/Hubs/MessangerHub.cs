@@ -2,6 +2,7 @@
 using ChatAppServer.Model;
 using ChatAppServer.Services;
 using ChatAppServer.Util;
+using DAL.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +13,7 @@ namespace ChatAppServer.Hubs
     [Authorize]
     public class MessangerHub : Hub
     {
- 
+        private ChatUserNotificationTokenEntityRepository ChatUserNotificationTokenEntityRepository { get; set; } = new();
         public override Task OnConnectedAsync()
         {
             TimeUtil.GetCurrentTimeMilliseconds();
@@ -42,14 +43,30 @@ namespace ChatAppServer.Hubs
             ClientsUtil.AuthorizedMessegingClients.TryGetValue(receiverId, out string? receiverConnectionId);
             if (receiverConnectionId.IsNullOrEmpty() )
             {
-                //TODO:Offline send
+                // Offline send
                 string? notificationToken = await FireBaseDbService.Instance.GetNotificationTokenAsync(receiverId);
-                await FireBaseAdminService.Instance.SendMessageAsync(notificationToken, sendMessageArgs);
+                await FireBaseAdminService.SendMessageAsync(notificationToken, sendMessageArgs);
                 return;
             }
             Console.Write($"\nMessage send to receiver id: {receiverConnectionId}");
+            //Single client message send
+            if (sendMessageArgs.ExtraReceiversId.IsNullOrEmpty()) {
+                   
+                await Clients.Client(receiverConnectionId!).SendAsync(ServerConstants.ON_RECEIVE_MESSAGE_CALL_BACK, sendMessageArgs);
+                return ;
 
-            await Clients.Client(receiverConnectionId!).SendAsync(ServerConstants.ON_RECEIVE_MESSAGE_CALL_BACK, sendMessageArgs);
+            }
+            //Multiple clients message send (Group)
+            foreach (var extraReceiverId in sendMessageArgs.ExtraReceiversId)
+            {
+                ClientsUtil.AuthorizedMessegingClients.TryGetValue(extraReceiverId, out string? extraReceiverConnectionId);
+                //TODO: Offline group clients message send (notification)
+
+                await Clients.Client(extraReceiverConnectionId!).SendAsync(ServerConstants.ON_RECEIVE_MESSAGE_CALL_BACK, sendMessageArgs);
+                
+
+            }
+
 
 
             //await Clients.Users(receiverConnectionId).SendAsync("onReceiveMessage", sendMessageArgs);

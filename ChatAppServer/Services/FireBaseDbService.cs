@@ -1,12 +1,5 @@
-﻿using ChatAppServer.Constants;
-using ChatAppServer.Util;
-using FirebaseAdmin;
-using FirebaseAdmin.Auth;
-using Google.Apis.Auth.OAuth2;
+﻿using ChatAppServer.Util;
 using Google.Cloud.Firestore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ChatAppServer.Services
 {
@@ -19,9 +12,6 @@ namespace ChatAppServer.Services
         {
             try
             {
-              
-
-
                 Initialized = true;
             }
             catch (Exception ex)
