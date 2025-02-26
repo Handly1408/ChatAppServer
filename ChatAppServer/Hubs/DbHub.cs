@@ -31,7 +31,7 @@ namespace ChatAppServer.Hubs
         /// </summary>
         /// <param name="chatUserEntity"></param>
         /// <returns></returns>
-        public async Task<ChatUserProfileDataEntity> OnSaveMyUserProfileData(ChatUserProfileDataEntity? chatUserEntity)
+        public ChatUserProfileDataEntity OnSaveMyUserProfileData(ChatUserProfileDataEntity? chatUserEntity)
         {
 
             // Здесь может быть ошибка (например, при сохранении в БД)
@@ -42,13 +42,13 @@ namespace ChatAppServer.Hubs
             return ChatUserProfileEntityRepository.GetUserProfileDataById(chatUserEntity.ContactId)!;
 
         }
- 
-        public async Task<ChatUserProfileDataEntity> OnGetUserProfileData(string userProfileId)
+
+        public Task<ChatUserProfileDataEntity> OnGetUserProfileData(string userProfileId)
         {
 
             // Здесь может быть ошибка (например, при сохранении в БД)
 
-          return ChatUserProfileEntityRepository.GetUserProfileDataById(userProfileId)!;
+          return Task.FromResult(ChatUserProfileEntityRepository.GetUserProfileDataById(userProfileId)!);
             
               
 
