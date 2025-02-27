@@ -1,4 +1,5 @@
 ﻿using DAL.Enum;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace DAL.Entities
     {
        
         public string? ContactPrivacyType { get; set ; }
+        [JsonProperty]
         public List<string>? Members { get; set; }
 
       

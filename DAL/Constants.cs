@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace DAL
 {
-    internal class Constants
+    public class Constants
     {
-        public const string LITE_DB_DATA_NAME = "liteData.db";
+        public const string LITE_DB_DATA_NAME = "chat.db";
     }
 }

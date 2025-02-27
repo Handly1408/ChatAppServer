@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace DAL.Entities
         public string? ContactId { get; set; } = "";
         public string? ContactOwnerId { get; set; } = "";
         public string? ImgUrl { get; set; } = "";
+        [JsonProperty]
         public List<int>? AvatarDefaultColor { get; set; }
         public long timestamp { get; set; }
         public string? ContactType { get; set; } = "";

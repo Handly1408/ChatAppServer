@@ -1,5 +1,6 @@
 ﻿using DAL.Interfaces;
 using LiteDB;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,9 @@ namespace DAL.Entities
     public class EntityBase : IEntity
     {
 
-        [BsonId]
+        
         [JsonIgnore]
+        
         public int Id { get ; set; }
        
     }

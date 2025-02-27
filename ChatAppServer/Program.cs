@@ -1,9 +1,12 @@
 ﻿using ChatAppServer.Hubs;
 using ChatAppServer.Model;
+using DAL.Context;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using static Google.Protobuf.Reflection.GeneratedCodeInfo.Types;
 using static System.Net.Mime.MediaTypeNames;
@@ -28,8 +31,8 @@ public class Program
 
         ConfigureServices(builder.Services);
 
+         builder.Services.AddDbContext<ChatDbContext>(option => option.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
         App = builder.Build();
-        
         // Configure the HTTP request pipeline.
         if (!App.Environment.IsDevelopment())
         {
