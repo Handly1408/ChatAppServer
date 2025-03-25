@@ -25,58 +25,65 @@ namespace ChatAppServer.Hubs
 
             return base.OnDisconnectedAsync(exception);
         }
+       
 
-     
-        public async Task SendSignalCallToUser(DataModel dataModel)
+
+        public async Task SendSignalCallToUser(SignalTargetDataModel dataModel)
         {
             
             try
             {
+                CallInfoModel callInfoModel;
                 ClientsUtil.AuthorizedWebRTCClients.TryGetValue(dataModel.TargetId, out string? receiverConnectionId);
+                //Call statuses
                 switch (dataModel.GetDataModelTypeEnum())   
                 {
                     
-                    case DataModelTypeEnum.INCOMING_CALL://FOR SENDER OF THE CALL
+                   
+                    case DataModelTypeEnum.OUTGOING_CALL:
 
-                        if (CallUtil.ActiveCalls.TryGetValue(dataModel.TargetId,out var existCall))
+                        if (CallUtil.ActiveCalls.TryGetValue(dataModel.TargetId, out var existCall))
                         {
+                            //TODO:IN APP RECEIVER IS BUSSY STATUS
                             dataModel.DataModelTypeEnum = EnumUtil.GetStrFromEnum(DataModelTypeEnum.CALL_RECEIVER_BUSY)!;
 
                             await Clients.Caller.SendAsync("onSignalReceivedCallBack", dataModel);
                             Console.Write($"\nSignal send -> {dataModel.DataModelTypeEnum} to the sender: Name {dataModel.SenderName} FB: {dataModel.SenderId}");
 
                             //Second incoming call while a current existing call
-                            dataModel.DataModelTypeEnum = EnumUtil.GetStrFromEnum(DataModelTypeEnum.SECOND_INCOMING_CALL)!;
+                            // dataModel.DataModelTypeEnum = EnumUtil.GetStrFromEnum(DataModelTypeEnum.SECOND_INCOMING_CALL)!;
+                           await SendCallToReceiver(dataModel, DataModelTypeEnum.ANOTHER_INCOMING_CALL, receiverConnectionId,Clients);
 
-                            break;
+                           break;
+
                         }
-                       
-                        CallUtil.InitiateCall(async (o, a)=>{
-                            //TODO: oPTIMIZE FOR GROUP CALLS
-                             ClientsUtil.AuthorizedWebRTCClients.TryGetValue(dataModel.SenderId, out string? senderConnectionId);
-                             
-                            dataModel.DataModelTypeEnum = EnumUtil.GetStrFromEnum(DataModelTypeEnum.CALL_TIMEOUT)!;
-                            if (Utils.CheckStrForNull(dataModel.DataModelTypeEnum))
-                            {
-                                throw new NullReferenceException("$Can not send null command");
-                            }
-                            if (!Utils.CheckStrForNull(senderConnectionId) && CallUtil.ActiveCalls.TryGetValue(dataModel.SenderId, out var incomingCall))
-                            {
-                                //TODO: TEST REQUAE
-                                //await incomingCall.Clients.Caller.SendAsync("onSignalReceivedCallBack", dataModel);
+                        else
+                        {
+                            await SendCallToReceiver(dataModel, DataModelTypeEnum.INCOMING_CALL, receiverConnectionId,Clients);
 
-                                //INSTEAD
-                                //We gonna call our self but through the Client.Client
-                                //instead of Clients.Caller and pass (our self id)  
+                        }
 
-                                await incomingCall.Clients.Client(senderConnectionId!).SendAsync("onSignalReceivedCallBack", dataModel);
+                        //Start timer for cancel the call by time elapsed
+                        CallUtil.InitiateCall(async (o, a) =>
+                        {
+                            //TODO: PTIMIZE FOR GROUP CALLS
+                          ClientsUtil.AuthorizedWebRTCClients.TryGetValue(dataModel.SenderId, out string? senderConnectionId);
+                          ClientsUtil.AuthorizedWebRTCClients.TryGetValue(dataModel.TargetId, out string? receiverConnectionId);
+
+                            var callEvent = DataModelTypeEnum.CALL_TIMEOUT; 
+                            dataModel.DataModelTypeEnum = EnumUtil.GetStrFromEnum(callEvent)!;
+
+                            //Check if the caller is online and call exist (the last just in case)
+                            if (!Utils.CheckStrForNull(senderConnectionId) && CallUtil.ActiveCalls.TryGetValue(dataModel.SenderId, out var incomingCall)/*just in case*/)
+                            {
+                                //Cancel the call by timeout for sender
+                                await incomingCall.Clients.Caller.SendAsync("onSignalReceivedCallBack", dataModel);
                                 Console.Write($"\nSignal send -> {dataModel.DataModelTypeEnum} to the sender: Name {dataModel.SenderName} FB: {dataModel.SenderId}");
 
                                 //TODO:OPTIMIZATION OF THE TRAFIC HERE SEND MESSAGE TO THE RECEIVER ALSO
-                                ClientsUtil.AuthorizedWebRTCClients.TryGetValue(dataModel.TargetId, out string? receiverConnectionId);
                                 //Send Call time out to the receiver
-                                await incomingCall.Clients.Client(receiverConnectionId!).SendAsync("onSignalReceivedCallBack", dataModel);
-                                Console.Write($"\nSignal send -> {dataModel.DataModelTypeEnum} to the Reсeiver FB: {dataModel.TargetId}");
+                                await SendCallToReceiver(dataModel, callEvent, receiverConnectionId,incomingCall.Clients);
+
 
 
                             }
@@ -86,51 +93,66 @@ namespace ChatAppServer.Hubs
                             //-----------------------------------------------------
 
                         }
-                        ,callerCnnectionId: dataModel.SenderId,Clients);
+                        //----------------------------------------------
+                        , callId: dataModel.SenderId, Clients);
                         break;
                     case DataModelTypeEnum.CALL_ACCEPTED:
-                        CallUtil.ActiveCalls.TryGetValue(dataModel.TargetId,out var callAccepted);
-                        if (!Utils.CheckForNull(callAccepted))
+                        CallUtil.ActiveCalls.TryGetValue(dataModel.TargetId /*in this case this is the call creator sender*/, out callInfoModel);
+                        if (!Utils.CheckForNull(callInfoModel))
                         {
-                            callAccepted.StopTimer();
+                            callInfoModel.StopTimer();
                             //activeCalls.Remove(dataModel.TargetId);//Remove the active call
 
                         }
-
+                        await SendCallToReceiver(dataModel,DataModelTypeEnum.CALL_ACCEPTED,receiverConnectionId, Clients);
                         break;
+                    /*
+                       case DataModelTypeEnum.VIDEO_CALL_ACCEPTED:
+
+                          await SendCallToReceiver(dataModel,
+                          DataModelTypeEnum.VIDEO_CALL_ACCEPTED,
+                          receiverConnectionId, Clients);
+                          break;
+                     */
                     case DataModelTypeEnum.CALL_REJECTED_OR_END:
                         //Seens we dont know who send this status we gonna find the owner of the status
-                        var call = CallUtil.FindActiveCallInfoModelByCallOwner(dataModel);
-                        if (!Utils.CheckForNull(call))
+
+                        callInfoModel= CallUtil.FindActiveCallInfoModelByCallOwner(dataModel)!;
+                        if (!Utils.CheckForNull(callInfoModel))
                         {
-                            call.StopTimer();
-                            CallUtil.ActiveCalls.Remove(dataModel.TargetId);//Remove the active call
+                            callInfoModel.StopTimer();
+                            CallUtil.ActiveCalls.Remove(callInfoModel.CallerId);//Remove the active call
 
                         }
+                        await SendCallToReceiver(dataModel,DataModelTypeEnum.CALL_REJECTED_OR_END,receiverConnectionId, Clients);
 
+                        return;
+                    case DataModelTypeEnum.CONFIRM_CALL:
+                        await SendConfirmCall(dataModel);
+
+                        break;
+                    //ICE CANDIDATE,OFFER,ANSWER
+                    /*
+                        case DataModelTypeEnum.OFFER:
+                       case DataModelTypeEnum.ANSWER:
+                           case DataModelTypeEnum.ICE_CANDIDATE:
+                           await SendCallToReceiver(dataModel,
+                               dataModel.GetDataModelTypeEnum(),
+                               receiverConnectionId, Clients);
+                           break;
+
+                     */
+                    //ICE CANDIDATE,OFFER,ANSWER etc...
+                    default:
+                        await SendCallToReceiver(dataModel,
+                              dataModel.GetDataModelTypeEnum(),
+                              receiverConnectionId, Clients);
                         break;
 
                 }
 
-                if (!Utils.CheckStrForNull(receiverConnectionId))
-                {      //Call Rejected when target client was not in online
-                       // should be never happend just in case
 
-                    if (dataModel.GetDataModelTypeEnum().Equals(DataModelTypeEnum.CALL_REJECTED_OR_END))
-                    {
-                         return;
-                     }
-                      //--------------------------------------------------------------------------------
-                     
-                    //Offline send
-                    string? notificationToken = await FireBaseDbService.Instance.GetNotificationTokenAsync(dataModel.TargetId);
-                    await FireBaseAdminService.Instance.SendIncomingCallAsync(notificationToken, dataModel);
-                    return;
-                }
 
-                //await Clients.Caller.SendAsync("onSignalReceivedCallBack",dataModel);
-                await Clients.Client(receiverConnectionId!).SendAsync("onSignalReceivedCallBack", dataModel);
-                Console.Write($"\nSignal send -> {dataModel.DataModelTypeEnum} to the receiver FB: {dataModel.TargetId}");
 
             }
             catch (Exception ex)
@@ -139,6 +161,54 @@ namespace ChatAppServer.Hubs
                 Console.Write($"\n{ex.Message}");
 
             }
+        }
+
+        public async Task SendConfirmCall(SignalTargetDataModel dataModel)
+        {
+             ClientsUtil.AuthorizedWebRTCClients.TryGetValue(dataModel.TargetId, out string? receiverConnectionId);
+
+             ClientsUtil.AuthorizedWebRTCClients.TryGetValue(dataModel.SenderId, out string? callerConnectionId);
+
+            if (!Utils.CheckStrForNull(callerConnectionId) && CallUtil.ActiveCalls.TryGetValue(dataModel.SenderId, out var incomingCallForCheck) /*just in case*/)
+            {
+                //Cancel the call by timeout for sender
+
+                Console.Write($"\nSignal send -> {dataModel.DataModelTypeEnum} to the sender: Name {dataModel.SenderName} FB: {dataModel.SenderId}");
+
+                //TODO:OPTIMIZATION OF THE TRAFIC HERE SEND MESSAGE TO THE RECEIVER ALSO
+                //Send Call time out to the receiver
+                dataModel.SetDataModelTypeEnum(DataModelTypeEnum.CALL_CONFIRM_SUCCESS);
+
+                await SendCallToReceiver(dataModel, dataModel.GetDataModelTypeEnum(), receiverConnectionId, incomingCallForCheck.Clients);
+
+
+            }
+            else
+            {   //No call exist anymore or the caller
+                dataModel.SetDataModelTypeEnum(DataModelTypeEnum.CALL_CONFIRM_UNSUCCESSFUL);
+                await SendCallToReceiver(dataModel, dataModel.GetDataModelTypeEnum(), receiverConnectionId, Clients);
+
+
+            }
+        }
+
+
+        private async Task SendCallToReceiver(SignalTargetDataModel dataModel, DataModelTypeEnum callEvent, string? receiverConnectionId,IHubCallerClients clients)
+      
+            {
+            dataModel.DataModelTypeEnum = EnumUtil.GetStrFromEnum(callEvent)!;
+
+            if (Utils.CheckStrForNull(receiverConnectionId))
+            {
+                 await FireBaseAdminService.Instance.SendIncomingCallAsync(dataModel.TargetId, dataModel);
+            }
+            else
+            {
+                
+                await clients.Client(receiverConnectionId!).SendAsync("onSignalReceivedCallBack", dataModel);
+                Console.Write($"\nSignal send -> {dataModel.DataModelTypeEnum} to the receiver FB: {dataModel.TargetId}");
+
+           }
         }
     }
 }

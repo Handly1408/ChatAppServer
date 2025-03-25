@@ -49,7 +49,7 @@ namespace ChatAppServer.Util
             if (id.IsNullOrEmpty()) return (null, null);
             string connectionId = context.ConnectionId;
             toUpdate.AddOrUpdate(id, connectionId, (k, v) => v);
-            Console.WriteLine($"Client connected to: {hubName ?? "????"} connection id: {connectionId} FB id:{id}");
+            Console.WriteLine($"\nClient connected to: {hubName ?? "????"} connection id: {connectionId} FB id:{id}");
             return (id, connectionId);
 
         }
@@ -60,7 +60,7 @@ namespace ChatAppServer.Util
             if (id.IsNullOrEmpty()) return;
              
             toUpdate.Remove(id,out var remove);
-            Console.WriteLine($"Client removed from: {hubName ?? "????"} connection id: {remove} FB id: {id}");
+            Console.WriteLine($"\nClient removed from: {hubName ?? "????"} connection id: {remove} FB id: {id}");
             
 
         }

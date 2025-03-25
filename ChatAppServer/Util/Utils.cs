@@ -3,7 +3,7 @@
     public class Utils
     {
         public static bool CheckStrForNull(string? str)=>string.IsNullOrEmpty(str);
-        public static bool CheckForNull(object? obj)=>null!=obj;
+        public static bool CheckForNull(object? obj)=>obj==null;
 
     }
 }

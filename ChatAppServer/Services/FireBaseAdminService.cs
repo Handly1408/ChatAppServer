@@ -108,39 +108,95 @@ namespace ChatAppServer.Services
 
         }
 
-        internal async Task SendMessageAsync(string? notificationToken, SendMessageArgs args)
+        internal async Task SendMessageAsync(string receiverId, SendMessageArgs args)
         {
-            
+            string? notificationToken = await FireBaseDbService.Instance.GetNotificationTokenAsync(receiverId);
+
             if (notificationToken == null) return;
             var messageEventType = args.MessageEventTypeEnum;
             
             
-            Message messageObject = new Message
+            var messageObject = new Message
             {
                 Token = notificationToken,
                 
-                 
+                
                 Data = new Dictionary<string, string>()
                  {
+                     {"MessageType","Message"},
+
                      {"Message",args.MessageJson},
-                     {"MessageEventType",messageEventType}
+                     {"MessageEventType",messageEventType},
+                     {"SenderId",args.SenderId},
+                     {"MessagePublicKey",args.MessagePublicKey}
+
                  }
+            
 
 
             };
           
             var res = await FirebaseMessaging.DefaultInstance.SendAsync(messageObject);
           
-            Console.WriteLine($"Successfully sent message: {res}");
+            Console.WriteLine($"\nSend notification message to receiver id: {args.ReceiverId}");
 
         }
-
-        internal async Task SendIncomingCallAsync(string? notificationToken, DataModel dataModel)
+        internal async Task SendIncomingCallAsync(string receiverId, SignalTargetDataModel dataModel)
         {
+            string? notificationToken = await FireBaseDbService.Instance.GetNotificationTokenAsync(receiverId);
+
             if (notificationToken == null) return;
         
             string dataModelJson= JsonConvert.SerializeObject(dataModel);
+          
+            Message messageObject = new Message
+            {
+                Token = notificationToken,
+                
+              
 
+                Data = new Dictionary<string, string>()
+                 {
+                     {"MessageType","Incoming call"},
+
+                     {"IncomingCallDataModel",dataModelJson},
+                     
+
+                },
+                /*
+                    Webpush=new WebpushConfig {
+
+                        Headers = new Dictionary<string, string>() {
+                            { "TTL","10"}
+
+                        }
+                    }, 
+                 */
+
+
+                Android = new AndroidConfig {
+                    /*
+                        TimeToLive=TimeSpan.FromSeconds(10),
+                     */
+                   // CollapseKey = "incoming_call", 
+                    Priority=Priority.High,
+                }
+                
+
+
+            };
+
+            var res = await FirebaseMessaging.DefaultInstance.SendAsync(messageObject);
+
+            Console.WriteLine($"Successfully sent message: {res}");
+        }
+        internal async Task SendMissedIncomingCallAsync(string? receiverId, SignalTargetDataModel dataModel)
+        {
+            if (receiverId == null) return;
+            string? notificationToken = await FireBaseDbService.Instance.GetNotificationTokenAsync(receiverId);
+
+            string dataModelJson = JsonConvert.SerializeObject(dataModel);
+          
             Message messageObject = new Message
             {
                 Token = notificationToken,
@@ -148,17 +204,16 @@ namespace ChatAppServer.Services
 
                 Data = new Dictionary<string, string>()
                  {
-                     {"IncomingCallDataModel",dataModelJson},
+                     {"MissedIncomingCallDataModel",dataModelJson},
                      
 
-                }
-
-
+                },
+          
             };
 
             var res = await FirebaseMessaging.DefaultInstance.SendAsync(messageObject);
 
-            Console.WriteLine($"Successfully sent message: {res}");
+            Console.WriteLine($"\nSuccessfully sent message: {res}");
         }
     }
 }

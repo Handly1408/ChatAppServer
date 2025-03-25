@@ -9,19 +9,18 @@ namespace ChatAppServer.Util
     {
         public static Dictionary<string, CallInfoModel> ActiveCalls { get; }= new (){ };
 
-        public static void InitiateCall(ElapsedEventHandler timeElapsed,
-            string callerCnnectionId,
+        public static void InitiateCall(ElapsedEventHandler timeElapsed,string callId,
             IHubCallerClients clients)
         {
             // Сохранение информации о звонке
-            ActiveCalls.Add(callerCnnectionId, new CallInfoModel(timeElapsed,
-                callerCnnectionId, clients));
+            ActiveCalls.Add(callId, new CallInfoModel(timeElapsed,
+                callId, clients));
             // Отправка уведомления клиенту
 
         }
 
 
-        public static CallInfoModel? FindActiveCallInfoModelByCallOwner(DataModel dataModel) {
+        public static CallInfoModel? FindActiveCallInfoModelByCallOwner(SignalTargetDataModel dataModel) {
             CallInfoModel? timer1, timer2 = null;
 
              ActiveCalls.TryGetValue(dataModel.TargetId, out timer1);

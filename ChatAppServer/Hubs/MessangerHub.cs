@@ -17,20 +17,36 @@ namespace ChatAppServer.Hubs
         {
             TimeUtil.GetCurrentTimeMilliseconds();
             TimeUtil.GetRegionTime();
-            ClientsUtil.AddMessegingClient(Context, GetType().Name);
-
+            (string? userId, _) = ClientsUtil.AddMessegingClient(Context, GetType().Name);
             return base.OnConnectedAsync();
         }
 
+
+
         public override Task OnDisconnectedAsync(Exception? exception)
         {
-            Console.Write($"\nOn Disconnected");
-            
-
             ClientsUtil.RemoveMessegingClient(Context,GetType().Name);
  
             return base.OnDisconnectedAsync(exception);
         }
+         /// <summary>
+         /// Call from the app (Each user will save their own public key)
+         /// </summary>
+         /// <param name="publicKeyEncode"></param>
+         /// <returns></returns>
+        public async Task SendPublicKey(string publicKeyEncode)
+        {
+            string userId = CliemsUtil.GetUserId(Context)!;
+            await UserDataUtil.SaveClientPublicKeyAsync(userId,new UserPublicKeyModel(userId,publicKeyEncode));
+        }
+        public async Task<string> GetContactKey(string contactId)
+        {
+            UserPublicKeyModel userPublicKeyModel= await UserDataUtil.GetUserPublicKeyAsync(contactId);
+            Console.WriteLine($"{nameof(GetContactKey)} -> Contact id->{userPublicKeyModel.UserId} Public key->{userPublicKeyModel.PublicKey}");
+            return userPublicKeyModel!.PublicKey==""?"null": userPublicKeyModel!.PublicKey;
+ 
+        }
+
 
         public async Task SendMessage(SendMessageArgs sendMessageArgs, string receiverId)
         {
@@ -43,13 +59,16 @@ namespace ChatAppServer.Hubs
             if (receiverConnectionId.IsNullOrEmpty() )
             {
                 //TODO:Offline send
-                string? notificationToken = await FireBaseDbService.Instance.GetNotificationTokenAsync(receiverId);
-                await FireBaseAdminService.Instance.SendMessageAsync(notificationToken, sendMessageArgs);
+                Console.ForegroundColor = ConsoleColor.Blue;
+       
+                Console.ResetColor();
+
+                 await FireBaseAdminService.Instance.SendMessageAsync(receiverId, sendMessageArgs);
                 return;
             }
-            Console.Write($"\nMessage send to receiver id: {receiverConnectionId}");
+            Console.Write($"\nSend message to receiver id: {receiverId}");
 
-            await Clients.Client(receiverConnectionId!).SendAsync(ServerConstants.ON_RECEIVE_MESSAGE_CALL_BACK, sendMessageArgs);
+             await Clients.Client(receiverConnectionId!).SendAsync(ServerConstants.ON_RECEIVE_MESSAGE_CALL_BACK, sendMessageArgs);
 
 
             //await Clients.Users(receiverConnectionId).SendAsync("onReceiveMessage", sendMessageArgs);

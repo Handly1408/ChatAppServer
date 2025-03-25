@@ -10,10 +10,10 @@ namespace ChatAppServer.Util
             Enum.TryParse(enumStr, out messageEvent);
             return messageEvent;
         }
-        public static string? GetStrFromEnum<T>(T value) where T : struct
+        public static string GetStrFromEnum<T>(T value) where T : struct
         {
             
-          return  Enum.GetName(typeof(T),value);
+          return  Enum.GetName(typeof(T),value)??default!;
             
         }
     }

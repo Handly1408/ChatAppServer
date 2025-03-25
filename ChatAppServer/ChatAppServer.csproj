@@ -8,23 +8,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FirebaseAdmin" Version="2.4.0" />
-    <PackageReference Include="Google.Cloud.Firestore" Version="3.4.0" />
+    <None Remove="Properties\launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FirebaseAdmin" Version="3.0.0" />
+    <PackageReference Include="Google.Cloud.Firestore" Version="3.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.12" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Enum\" />
     <Folder Include="UsersData\UserChatStatus\" />
+    <Folder Include="UsersData\UserPublicKeys\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="chatix-be382-firebase-adminsdk-j586k-790efe1ab2.json">
+    <EditorConfigFiles Include="Properties\launchSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="service_account.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </EditorConfigFiles>
   </ItemGroup>
 
 </Project>

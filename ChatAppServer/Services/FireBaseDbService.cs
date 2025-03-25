@@ -1,12 +1,5 @@
-﻿using ChatAppServer.Constants;
-using ChatAppServer.Util;
-using FirebaseAdmin;
-using FirebaseAdmin.Auth;
-using Google.Apis.Auth.OAuth2;
+﻿using ChatAppServer.Util;
 using Google.Cloud.Firestore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ChatAppServer.Services
 {
@@ -36,6 +29,10 @@ namespace ChatAppServer.Services
 
             if (_firestoreDb==null) {
                 SetEnvironmentVeriable();
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("\nCreate firebase db");
+                Console.ResetColor();  
+                
                 _firestoreDb = await FirestoreDb.CreateAsync(FirebaseUtil.GetProjectId());
                 FirebaseUtil.DeletePathToServiceAccount();
             }
@@ -55,7 +52,7 @@ namespace ChatAppServer.Services
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Ошибка при инициализации Firebase: {ex.Message}");
+                    Console.WriteLine($"\nОшибка при инициализации Firebase: {ex.Message}");
 
                 }
             }

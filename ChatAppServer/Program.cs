@@ -13,24 +13,29 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorPages();
         builder.Services.AddSignalR();
-        ConfigureServices(builder.Services);
-
-        App = builder.Build();
         
+        ConfigureServices(builder.Services);
+        //builder.WebHost.UseUrls("https://35.208.79.49:443");
+        App = builder.Build();
+       // App.Urls.Add("http://35.209.201.152:80");
+
+
         // Configure the HTTP request pipeline.
         if (!App.Environment.IsDevelopment())
         {
             App.UseExceptionHandler("/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-           // App.UseHttpsRedirection();
+            //App.UseHttpsRedirection();
 
             App.UseHsts();
         }
+        //App.UseCertificateForwarding();
 
         //sugest using top level round registration instead of useendpoints
         App.UseStaticFiles();
 
         App.UseRouting();
+      
 
 
 
@@ -42,8 +47,9 @@ public class Program
         App.MapHub<ContactOnlineStatusHub>("/contactsonlinestatus");
         App.MapHub<WebRTCSignalHub>("/webrtc");
 
-
+     
         App.Run();
+        
     }
     public static void ConfigureServices(IServiceCollection services)
     {
@@ -52,6 +58,7 @@ public class Program
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddScheme<AuthenticationSchemeOptions,FirebaseTokenValidator>(JwtBearerDefaults.AuthenticationScheme
             ,null);
+       
 
     }
 

@@ -2,7 +2,7 @@
 
 namespace ChatAppServer.Model
 {
-    public class ContactChatStatusModel
+    public class UserChatStatusModel
     {
         public string ContactId { get; set; }
       
@@ -10,21 +10,22 @@ namespace ChatAppServer.Model
         public bool IsActive { get; set; }
 
         // Конструктор
-        public ContactChatStatusModel(string contactId, bool isActive)
+        public UserChatStatusModel(string contactId, bool isActive)
         {
-            
+
             ContactId = contactId;
             IsActive = isActive;
-            Timestamp=TimeUtil.GetCurrentTimeMilliseconds();
+            Timestamp = TimeUtil.GetCurrentTimeMilliseconds();
+        
         }
-        public ContactChatStatusModel(string contactId, bool isActive,long timestamp)
+        public UserChatStatusModel(string contactId, bool isActive,long timestamp)
         {
 
             ContactId = contactId;
             IsActive = isActive;
             Timestamp = timestamp;
         }
-        public ContactChatStatusModel()
+        public UserChatStatusModel()
         {
             
         }

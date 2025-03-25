@@ -32,12 +32,14 @@ namespace ChatAppServer.Model
       
         public string MessageJson { get; set; }
         public string MessageId { get; set; }
+        public string MessagePublicKey { get; set; }
+
 
         // Константы для MessageEventType
-       // public const string ADDED = "ADDED";
-       // public const string MODIFIED = "MODIFIED";
-       // public const string DELETE = "DELETE";
-       // public const string DELETE_FOR_BOTH = "DELETE_FOR_BOTH";
+        // public const string ADDED = "ADDED";
+        // public const string MODIFIED = "MODIFIED";
+        // public const string DELETE = "DELETE";
+        // public const string DELETE_FOR_BOTH = "DELETE_FOR_BOTH";
 
         public SendMessageArgs()
         {

@@ -11,15 +11,17 @@ namespace ChatAppServer.Model
         private readonly Timer _timer;
       
       
-
-        public string CallerConnectionId { get; }
+        /// <summary>
+        /// Call id will be this call sender id
+        /// </summary>
+        public string CallerId { get; }
         public IHubCallerClients Clients { get; }
         public ElapsedEventHandler TimeElapsed { get; }
        //public string[] ReseiversId { get; }
 
 
 
-        public CallInfoModel(ElapsedEventHandler timeElapsed,string callerConnectionId,
+        public CallInfoModel(ElapsedEventHandler timeElapsed,string callerId,
           IHubCallerClients clients)
         {
 
@@ -27,7 +29,7 @@ namespace ChatAppServer.Model
             {
                 throw new ArgumentNullException("timeElapsed is null");
             }
-            if (Utils.CheckStrForNull(callerConnectionId))
+            if (Utils.CheckStrForNull(callerId))
             {
                 throw new ArgumentNullException("callerConnectionId is null");
             }
@@ -35,12 +37,12 @@ namespace ChatAppServer.Model
             {
                 throw new ArgumentNullException("clients is null");
             }
-            CallerConnectionId = callerConnectionId;
+            CallerId = callerId;
             Clients = clients;
             TimeElapsed = timeElapsed;
             _timer = new Timer
             {
-                Interval = 5000, // интервал в миллисекундах (здесь каждые 5 секунд)
+                Interval = 50000, // интервал в миллисекундах (здесь каждые 20 секунд)
                 AutoReset = false // устанавливаем автоматическое повторение
             };
             _timer.Elapsed += timeElapsed; // подписываемся на событие "Elapsed"

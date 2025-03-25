@@ -17,9 +17,9 @@ namespace ChatAppServer.Hubs
             (string? id,_) = ClientsUtil.AddChatContactStatusClient(Context,GetType().Name);
 
             if (string.IsNullOrEmpty(id)) return;
-            var newChatStatus = new ContactChatStatusModel(id, true);
+            var newChatStatus = new UserChatStatusModel(id, true);
             await Clients.Groups(id).SendAsync(ServerConstants.ON_CLIENT_STATUS_CHANGED,newChatStatus);
-            await UserChatStatusUtil.SaveStatusAsync(id,newChatStatus);
+            await UserDataUtil.SaveStatusAsync(id,newChatStatus);
              
         }
         public override async Task OnDisconnectedAsync(Exception? exception)
@@ -29,10 +29,10 @@ namespace ChatAppServer.Hubs
              
             var connectionId = Context.ConnectionId;
             Console.WriteLine($"\nOn Connected {connectionId}");
-            var newChatStatus = new ContactChatStatusModel(id, false);
+            var newChatStatus = new UserChatStatusModel(id, false);
             await Clients.Groups(id).SendAsync(ServerConstants.ON_CLIENT_STATUS_CHANGED, newChatStatus);
             Console.Write($"\n On client status changed -> client connection id: {newChatStatus.ContactId} -> new status: {newChatStatus.IsActive}");
-            await UserChatStatusUtil.SaveStatusAsync(id, newChatStatus);
+            await UserDataUtil.SaveStatusAsync(id, newChatStatus);
             ClientsUtil.RemoveChatContactStatusClient(Context, GetType().Name);
             return;
         }
@@ -45,9 +45,9 @@ namespace ChatAppServer.Hubs
         {
             if (contactId.IsNullOrEmpty()) return;
             await Groups.AddToGroupAsync(Context.ConnectionId, contactId);
-            await Clients.Caller.SendAsync(ServerConstants.ON_CLIENT_STATUS_CHANGED, await UserChatStatusUtil.GetStatusAsync(contactId));
+            await Clients.Caller.SendAsync(ServerConstants.ON_CLIENT_STATUS_CHANGED, await UserDataUtil.GetStatusAsync(contactId));
         }
-        public async Task NotifyMyChatStatus(ContactChatStatusModel contactChatStatusModel)
+        public async Task NotifyMyChatStatus(UserChatStatusModel contactChatStatusModel)
         {
 
             string id = CliemsUtil.GetUserId(Context)!;
